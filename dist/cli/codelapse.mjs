@@ -370,10 +370,10 @@ async function readFileHistory(file, cwd, opts = {}) {
   const max = opts.max ?? 300;
   const rev = opts.rev ?? "HEAD";
   const abs = resolve(cwd, file);
-  const dir = existsSync(abs) && statSync(abs).isDirectory() ? abs : dirname(abs);
-  if (!existsSync(dir)) throw new HistoryError(`Folder not found: ${dirname(file)}`);
   if (existsSync(abs) && statSync(abs).isDirectory())
     throw new HistoryError(`${file} is a folder. Pass a file.`);
+  let dir = dirname(abs);
+  while (!existsSync(dir) && dirname(dir) !== dir) dir = dirname(dir);
   let root;
   try {
     root = (await git(["rev-parse", "--show-toplevel"], dir)).toString().trim();
@@ -455,7 +455,7 @@ function historyToHtml(history, opts = {}) {
 }
 
 // src/cli/main.ts
-var VERSION = true ? "1.0.0" : "0.0.0-dev";
+var VERSION = true ? "1.0.1" : "0.0.0-dev";
 var HELP = `codelapse ${VERSION}: time-lapse any file's git history.
 
 Usage
@@ -520,14 +520,18 @@ function openFile(file) {
 async function main(argv, io) {
   try {
     const { flags, positionals } = parseArgs(argv);
-    if (flags.has("-h") || flags.has("--help") || positionals.length === 0) {
-      io.out(HELP);
-      return positionals.length === 0 && !flags.has("-h") && !flags.has("--help") ? 2 : 0;
-    }
     if (flags.has("-v") || flags.has("--version")) {
       io.out(`${VERSION}
 `);
       return 0;
+    }
+    if (flags.has("-h") || flags.has("--help")) {
+      io.out(HELP);
+      return 0;
+    }
+    if (positionals.length === 0) {
+      io.out(HELP);
+      return 2;
     }
     if (positionals.length > 1) throw new UsageError("Give one file at a time.");
     const { file, line } = splitLine(positionals[0]);

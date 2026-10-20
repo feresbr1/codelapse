@@ -1,6 +1,6 @@
 {
   "name": "codelapse",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Time-lapse any file's git history: watch the code evolve, click any line to see its life story, export the time-lapse as a video or GIF. Works on local and private repos.",
   "type": "module",
   "license": "MIT",
