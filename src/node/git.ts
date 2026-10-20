@@ -159,10 +159,11 @@ export async function readFileHistory(
   const max = opts.max ?? 300;
   const rev = opts.rev ?? 'HEAD';
   const abs = resolve(cwd, file);
-  const dir = existsSync(abs) && statSync(abs).isDirectory() ? abs : dirname(abs);
-  if (!existsSync(dir)) throw new HistoryError(`Folder not found: ${dirname(file)}`);
   if (existsSync(abs) && statSync(abs).isDirectory())
     throw new HistoryError(`${file} is a folder. Pass a file.`);
+  // Deleted files still have a history: start from the nearest folder that exists.
+  let dir = dirname(abs);
+  while (!existsSync(dir) && dirname(dir) !== dir) dir = dirname(dir);
   let root: string;
   try {
     root = (await git(['rev-parse', '--show-toplevel'], dir)).toString().trim();

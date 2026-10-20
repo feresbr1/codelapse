@@ -94,13 +94,17 @@ function openFile(file: string): void {
 export async function main(argv: string[], io: Io): Promise<number> {
   try {
     const { flags, positionals } = parseArgs(argv);
-    if (flags.has('-h') || flags.has('--help') || positionals.length === 0) {
-      io.out(HELP);
-      return positionals.length === 0 && !flags.has('-h') && !flags.has('--help') ? 2 : 0;
-    }
     if (flags.has('-v') || flags.has('--version')) {
       io.out(`${VERSION}\n`);
       return 0;
+    }
+    if (flags.has('-h') || flags.has('--help')) {
+      io.out(HELP);
+      return 0;
+    }
+    if (positionals.length === 0) {
+      io.out(HELP);
+      return 2;
     }
     if (positionals.length > 1) throw new UsageError('Give one file at a time.');
     const { file, line } = splitLine(positionals[0]!);

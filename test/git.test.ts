@@ -72,6 +72,27 @@ beforeAll(() => {
   );
   writeFileSync(join(repo, 'blob.bin'), Buffer.from([0, 1, 2, 3]));
   commit('notes.txt', 'hello\n', 'Add notes and a binary file');
+  mkdirSync(join(repo, 'old'));
+  commit('old/legacy.js', 'module.exports = 1;\n', 'Add legacy');
+  commit('old/legacy.js', 'module.exports = 2;\n', 'Bump legacy');
+  g('rm', '-q', '-r', 'old');
+  execFileSync(
+    'git',
+    [
+      '-c',
+      'user.name=Ada',
+      '-c',
+      'user.email=a@example.test',
+      'commit',
+      '-q',
+      '-m',
+      'Remove legacy',
+    ],
+    {
+      cwd: repo,
+      stdio: 'pipe',
+    },
+  );
 });
 
 describe('git history', () => {
@@ -99,6 +120,11 @@ describe('git history', () => {
       ['born', 0],
       ['edited', 3],
     ]);
+  });
+
+  it('shows the history of a file that has since been deleted', async () => {
+    const h = await readFileHistory('old/legacy.js', repo);
+    expect(h.commits.map((c) => c.message)).toEqual(['Add legacy', 'Bump legacy']);
   });
 
   it('limits to the most recent commits', async () => {
@@ -184,7 +210,8 @@ describe('cli', () => {
     expect((await cli(['src/calc.js', '-n', '0'])).code).toBe(2);
     expect((await cli(['--bogus'])).err).toMatch(/Unknown option/);
     expect((await cli([])).code).toBe(2);
-    expect((await cli(['--version'])).out).toMatch(/\d+\.\d+\.\d+/);
+    expect((await cli(['--version'])).out).toMatch(/^\d+\.\d+\.\d+(-[\w.]+)?\n$/);
+    expect((await cli(['--help'])).code).toBe(0);
   });
 
   it('splits file:line but not Windows drive letters', () => {

@@ -3,6 +3,14 @@
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [1.0.1] - 2026-10-20
+
+### Fixed
+
+- `codelapse --version` printed the help text instead of the version.
+- Files that no longer exist on disk (deleted or moved away) can be played again: their history is
+  still in git.
+
 ## [1.0.0] - 2026-10-20
 
 ### Added
@@ -19,4 +27,5 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 - Website: GitHub file links and shareable `#/gh/...` routes, optional token, real demos from
   Express, Preact and Chalk, opening `--json` histories.
 
+[1.0.1]: https://github.com/feresbr1/codelapse/releases/tag/v1.0.1
 [1.0.0]: https://github.com/feresbr1/codelapse/releases/tag/v1.0.0

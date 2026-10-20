@@ -78,6 +78,7 @@ codelapse src/index.ts                 # the last 300 commits of a file
 codelapse README.md:12                 # open with line 12's story selected
 codelapse lib/router.js -n 1000 -o router-history.html
 codelapse src/app.ts --rev v2.0.0      # history up to a tag
+codelapse lib/old-module.js            # files deleted since still have a history
 ```
 
 Install it to drop the `npx github:` prefix (`npm install -g github:feresbr1/codelapse`), or download
