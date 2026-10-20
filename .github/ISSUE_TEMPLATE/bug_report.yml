@@ -1,0 +1,19 @@
+name: Bug report
+description: A wrong animation or line story, an export problem, or the CLI misbehaving.
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened, and what did you expect?
+    validations:
+      required: true
+  - type: input
+    id: file
+    attributes:
+      label: Public file link (or how to reproduce)
+      placeholder: https://github.com/owner/repo/blob/main/path
+  - type: input
+    id: env
+    attributes:
+      label: OS, browser, Node.js and git versions, codelapse version

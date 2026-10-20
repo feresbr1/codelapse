@@ -1,0 +1,10 @@
+name: Feature idea
+description: A new view, export option, host or language.
+labels: [enhancement]
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: What would you like codelapse to do?
+    validations:
+      required: true
